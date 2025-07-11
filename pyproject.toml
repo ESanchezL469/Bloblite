@@ -1,0 +1,10 @@
+[project]
+name = "bloblite"
+version = "0.1.0"
+description = "Local Azure Blob Storage simulator"
+authors = [{ name = "Santiago Sanchez", email = "you@example.com" }]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools]
+packages = ["bloblite"]

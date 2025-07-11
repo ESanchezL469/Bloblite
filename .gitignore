@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+*.pyo
+*.log
+.env
+*.DS_Store
+/.bloblite_storage/
+/descargas/
+/downloads/
+venv/
+*.egg-info/
