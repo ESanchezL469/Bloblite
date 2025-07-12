@@ -1,79 +1,53 @@
-"""
-main.py
-
-Demostración segura del uso de BlobLite desde código Python.
-Compatible con múltiples ejecuciones sin errores fatales.
-"""
-
-from pathlib import Path
-from bloblite.storage import (
-    create_container,
-    list_containers,
-    upload_blob,
-    list_blobs,
-    download_blob,
-    get_blob_metadata,
-)
+import os
+from bloblite import storage
 
 
-def demo() -> None:
-    """Demostración completa de funcionalidades básicas."""
-    container = "demo-container"
-    test_file = "demo_data.txt"
-    download_dir = Path("descargas")
-    download_dir.mkdir(exist_ok=True)
+def main() -> None:
+    container = "clientes"
+    file_path = "data.csv"
+    dest_path = "./descargas/"
+    blob_name = os.path.basename(file_path)
 
-    # Crear archivo de prueba
-    if not Path(test_file).exists():
-        with open(test_file, "w", encoding="utf-8") as f:
-            f.write("Hola desde BlobLite!\n")
-
-    # Crear contenedor si no existe
-    print(f"\n➡️  Verificando existencia del contenedor '{container}'...")
+    # Crear contenedor (idempotente)
     try:
-        create_container(container)
-    except ValueError:
-        print(f"ℹ️  El contenedor '{container}' ya existe. Continuando.")
-
-    # Subir archivo
-    print(f"\n⬆️  Subiendo '{test_file}' a '{container}'...")
-    try:
-        upload_blob(container, test_file)
+        storage.create_container(name=container)
     except Exception as e:
-        print(f"⚠️  No se pudo subir el archivo: {e}")
+        print(f"[⚠️] Error creating container: {e}")
+
+    # Validar que el archivo exista antes de subirlo
+    if not os.path.isfile(file_path):
+        print(f"[❌] File not found: {file_path}")
+        return
+
+    # Subir archivo como blob
+    try:
+        storage.upload_blob(container=container, file_path=file_path)
+    except FileExistsError:
+        print(f"[ℹ️] Blob '{blob_name}' already exists in container '{container}'. Skipping upload.")
+    except Exception as e:
+        print(f"[⚠️] Error uploading blob: {e}")
 
     # Listar blobs
-    print(f"\n📄 Blobs en '{container}':")
     try:
-        for blob in list_blobs(container):
-            print(f" - {blob}")
+        storage.list_blobs(container=container)
     except Exception as e:
-        print(f"⚠️  Error al listar blobs: {e}")
+        print(f"[⚠️] Error listing blobs: {e}")
 
-    # Ver metadata
-    print(f"\nℹ️  Metadata de '{test_file}':")
-    meta = get_blob_metadata(container, test_file)
-    if meta:
-        for k, v in meta.items():
-            print(f"   {k}: {v}")
-    else:
-        print("⚠️  No se encontró metadata.")
+    # Asegurar que la carpeta de destino exista
+    os.makedirs(dest_path, exist_ok=True)
 
-    # Descargar blob
-    download_path = download_dir / test_file
-    print(f"\n⬇️  Descargando '{test_file}' a '{download_path}'...")
+    # Descargar el blob
     try:
-        download_blob(container, test_file, str(download_path))
+        storage.download_blob(container=container, blob_name=blob_name, destination=dest_path)
     except Exception as e:
-        print(f"⚠️  Error al descargar archivo: {e}")
+        print(f"[⚠️] Error downloading blob: {e}")
 
-    # Listar contenedores
-    print("\n📦 Contenedores existentes:")
-    for name in list_containers():
-        print(f" - {name}")
-
-    print("\n✅ Demo completada sin errores fatales.")
+    # Mostrar metadata
+    try:
+        storage.get_blob_metadata(container=container, blob_name=blob_name)
+    except Exception as e:
+        print(f"[⚠️] Error retrieving metadata: {e}")
 
 
 if __name__ == "__main__":
-    demo()
+    main()

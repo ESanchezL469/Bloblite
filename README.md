@@ -1,138 +1,103 @@
-# 📦 BlobLite - Local Azure Blob Storage Simulator
+# ☁️ BlobLite
 
-**BlobLite** is a real, production-grade tool that simulates [Azure Blob Storage](https://learn.microsoft.com/en-us/azure/storage/blobs/) using only your local filesystem.  
-It’s designed to help developers, students, and data engineers **learn and test Azure Blob workflows** without needing a cloud subscription.
-
-> ⚠️ Currently supports **Linux only** (e.g., Ubuntu, Linux Mint). Compatibility with macOS and Windows will come in future versions.
+**BlobLite** is a local, lightweight simulation of Azure Blob Storage — ideal for developers and data engineers who want to experiment, learn or prototype **without needing an Azure subscription**.
 
 ---
 
-## 🚀 What Does BlobLite Do?
+## 🚀 Features
 
-BlobLite allows you to:
-
-- Create containers (like Azure)
-- Upload and download blobs (files)
-- View metadata for each blob
-- List containers and blobs
-- Store everything persistently in your filesystem (not in memory)
-
-### 🧱 BlobLite Structure
-
-BlobLite stores everything under:
-
-```
-~/.bloblite_storage/
-```
-
-Each container is a folder inside that path.
-
-Example:
-
-```
-~/.bloblite_storage/demo-container/
-├── demo_data.txt
-├── demo_data.metadata.json
-```
-
-To view it in your file manager:
-- Go to your home folder (`/home/youruser/`)
-- Press `Ctrl + H` to show hidden folders
+- Create and manage containers locally
+- Upload, list, download blobs with realistic metadata
+- Azure-like CLI for seamless migration and learning
+- No dependencies, no external services
+- Built to last, with clean architecture and good practices
 
 ---
 
-## ⚙️ Features in Phase 1 (Current Version)
+## ⚙️ Requirements
 
-| Feature           | Status    |
-|------------------|-----------|
-| Create container | ✅ Done   |
-| Upload blob      | ✅ Done   |
-| Download blob    | ✅ Done   |
-| List containers  | ✅ Done   |
-| List blobs       | ✅ Done   |
-| View metadata    | ✅ Done   |
-| CLI interface    | ✅ Done   |
-| Python SDK       | 🔜 Next   |
-| Docker image     | 🔜 Later  |
-| Web API (FastAPI)| 🔜 Later  |
+- Python 3.8+
+- Linux (initial support; Windows/Mac coming soon)
 
 ---
 
-## 🖥️ How to Use
-
-### ▶️ Run from CLI
+## 🛠 Installation (local development)
 
 ```bash
-python bloblite/cli.py create mycontainer
-python bloblite/cli.py upload mycontainer ./example.csv
-python bloblite/cli.py list mycontainer
-python bloblite/cli.py download mycontainer example.csv ./downloads/
-python bloblite/cli.py metadata mycontainer example.csv
+git clone https://github.com/youruser/bloblite.git
+cd bloblite
+make setup
 ```
 
-### ▶️ Run from Code
+---
+
+## 🧪 CLI Usage
 
 ```bash
-python main.py
-```
+# Create a container
+python bloblite/cli.py container create clientes
 
-This will:
-- Create a test container and file
-- Upload it
-- List contents and metadata
-- Download it to a local folder (`./descargas/`)
-- Handle errors gracefully
+# List containers
+python bloblite/cli.py container list
 
----
+# Upload a file to a container
+python bloblite/cli.py blob upload --container clientes --file ./data.csv
 
-## 📂 Where Does It Store Things?
+# List blobs inside a container
+python bloblite/cli.py blob list --container clientes
 
-BlobLite stores all your containers and files here:
+# Download a blob to a specific location
+python bloblite/cli.py blob download --container clientes --name data.csv --dest ./downloads/
 
-```
-~/.bloblite_storage/
-```
-
-This is your **home directory** (the `~` symbol). The folder is hidden.
-
-To check manually:
-
-```bash
-ls -la ~/.bloblite_storage
+# Show blob metadata
+python bloblite/cli.py blob show-metadata --container clientes --name data.csv
 ```
 
 ---
 
-## 📌 Requirements
+## 📁 File Storage
 
-- Python 3.8 or higher
-- Linux OS (Ubuntu, Mint, Debian, etc.)
+All containers and blobs are stored under:
 
-No external libraries or cloud account required.
+```
+~/.bloblite_storage/<container>/<blob>
+```
 
----
-
-## 📅 Roadmap
-
-- [x] Phase 1: Local filesystem core + CLI
-- [ ] Phase 2: Python SDK (`from bloblite import BlobClient`)
-- [ ] Phase 3: REST API with FastAPI
-- [ ] Phase 4: Docker support for isolated usage
-- [ ] Phase 5: Cross-platform support (macOS, Windows)
+> The base path is automatically created per user in their home directory.
 
 ---
 
-## 🤝 Community-Oriented
+## 📂 Project Structure
 
-BlobLite is designed with ❤️ to help make Azure Blob Storage accessible for:
-
-- Students and bootcampers
-- Developers with limited internet/cloud access
-- Engineers preparing for Azure certification
-- Anyone who wants a **real working tool**, not just mock-ups
+```
+bloblite/
+├── bloblite/              ← Core library (container/blob logic)
+│   ├── cli.py             ← Azure-style CLI
+│   ├── storage.py         ← Storage logic
+│   └── __init__.py
+├── examples/
+│   └── main.py            ← Programmatic example usage
+├── tests/                 ← (Coming soon)
+├── requirements-dev.txt
+├── pyproject.toml
+├── Makefile
+└── README.md
+```
 
 ---
 
-## 📄 License
+## 🔜 Roadmap
 
-MIT License — use freely, improve freely, contribute freely.
+- [x] CLI with Azure-style subcommands
+- [ ] Python SDK (BlobServiceClient, ContainerClient)
+- [ ] Windows/Mac support
+- [ ] GitHub Actions tests
+- [ ] Integration with Azure CLI (`az`)
+
+---
+
+## 🪪 License
+
+MIT — feel free to fork, extend, or contribute.
+
+Made with ❤️ by Santiago Sánchez.
