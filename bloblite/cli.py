@@ -33,7 +33,9 @@ def _setup_arg_parser() -> argparse.ArgumentParser:
     blob_upload.add_argument("--container", required=True, help="Target container name")
     blob_upload.add_argument("--file", required=True, help="Path to local file")
 
-    blob_download = blob_sub.add_parser("download", help="Download a blob from a container")
+    blob_download = blob_sub.add_parser(
+        "download", help="Download a blob from a container"
+    )
     blob_download.add_argument("--container", required=True, help="Container name")
     blob_download.add_argument("--name", required=True, help="Blob name to download")
     blob_download.add_argument("--dest", required=True, help="Destination folder path")
@@ -70,7 +72,9 @@ def main() -> None:
         elif args.action == "list":
             storage.list_blobs(container_name=args.container)
         elif args.action == "show-metadata":
-            storage.get_blob_metadata(container_name=args.container, blob_name=args.name)
+            storage.get_blob_metadata(
+                container_name=args.container, blob_name=args.name
+            )
 
 
 if __name__ == "__main__":

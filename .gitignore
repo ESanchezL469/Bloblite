@@ -9,3 +9,4 @@ __pycache__/
 /downloads/
 venv/
 *.egg-info/
+.pytest_cache/

@@ -8,9 +8,11 @@ from typing import List, Optional, Dict
 # 📁 Ruta base del sistema de almacenamiento
 BASE_PATH: Path = Path.home() / ".bloblite_storage"
 
+
 def _ensure_base_path() -> None:
     """Garantiza que el directorio base exista."""
     BASE_PATH.mkdir(parents=True, exist_ok=True)
+
 
 def create_container(name: str) -> None:
     """
@@ -29,6 +31,7 @@ def create_container(name: str) -> None:
     container_path.mkdir()
     print(f"✅ Container '{name}' created.")
 
+
 def list_containers() -> List[str]:
     """
     Lista todos los contenedores existentes.
@@ -37,10 +40,8 @@ def list_containers() -> List[str]:
         Lista de nombres de contenedores.
     """
     _ensure_base_path()
-    return sorted([
-        d.name for d in BASE_PATH.iterdir()
-        if d.is_dir()
-    ])
+    return sorted([d.name for d in BASE_PATH.iterdir() if d.is_dir()])
+
 
 def upload_blob(container: str, file_path: str) -> None:
     """
@@ -69,7 +70,7 @@ def upload_blob(container: str, file_path: str) -> None:
         "name": source.name,
         "size": source.stat().st_size,
         "uploaded_at": datetime.now(timezone.utc).isoformat(),
-        "content_type": "application/octet-stream"
+        "content_type": "application/octet-stream",
     }
 
     metadata_file = container_path / f"{source.stem}.metadata.json"
@@ -77,6 +78,7 @@ def upload_blob(container: str, file_path: str) -> None:
         json.dump(metadata, f, indent=2)
 
     print(f"⬆️  Uploaded '{source.name}' to container '{container}'.")
+
 
 def list_blobs(container: str) -> List[str]:
     """
@@ -95,11 +97,15 @@ def list_blobs(container: str) -> List[str]:
     if not container_path.exists():
         raise FileNotFoundError(f"Container '{container}' does not exist.")
 
-    blobs = sorted([
-        f.name for f in container_path.iterdir()
-        if f.is_file() and not f.name.endswith(".metadata.json")
-    ])
+    blobs = sorted(
+        [
+            f.name
+            for f in container_path.iterdir()
+            if f.is_file() and not f.name.endswith(".metadata.json")
+        ]
+    )
     return blobs
+
 
 def download_blob(container: str, blob_name: str, destination: str) -> None:
     """
@@ -116,10 +122,13 @@ def download_blob(container: str, blob_name: str, destination: str) -> None:
     container_path = BASE_PATH / container
     blob_path = container_path / blob_name
     if not blob_path.exists():
-        raise FileNotFoundError(f"Blob '{blob_name}' not found in container '{container}'.")
+        raise FileNotFoundError(
+            f"Blob '{blob_name}' not found in container '{container}'."
+        )
 
     shutil.copy2(blob_path, destination)
     print(f"⬇️  Downloaded '{blob_name}' to '{destination}'.")
+
 
 def get_blob_metadata(container: str, blob_name: str) -> Optional[Dict[str, str | int]]:
     """

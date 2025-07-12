@@ -1,0 +1,32 @@
+name: BlobLite CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5  # ⏱️ Limita tiempo para evitar abuso
+
+    steps:
+      - name: ⬇️ Checkout repository
+        uses: actions/checkout@v3
+
+      - name: 🐍 Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install dev dependencies
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+          pip install -r requirements-dev.txt
+
+      - name: 🧪 Run tests with pytest
+        run: |
+          source venv/bin/activate
+          pytest --maxfail=1 --disable-warnings

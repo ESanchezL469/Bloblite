@@ -96,6 +96,10 @@ bloblite/
 
 ---
 
+
+![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
+
+
 ## 🪪 License
 
 MIT — feel free to fork, extend, or contribute.

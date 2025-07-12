@@ -23,7 +23,9 @@ def main() -> None:
     try:
         storage.upload_blob(container=container, file_path=file_path)
     except FileExistsError:
-        print(f"[ℹ️] Blob '{blob_name}' already exists in container '{container}'. Skipping upload.")
+        print(
+            f"[ℹ️] Blob '{blob_name}' already exists in container '{container}'. Skipping upload."
+        )
     except Exception as e:
         print(f"[⚠️] Error uploading blob: {e}")
 
@@ -38,7 +40,9 @@ def main() -> None:
 
     # Descargar el blob
     try:
-        storage.download_blob(container=container, blob_name=blob_name, destination=dest_path)
+        storage.download_blob(
+            container=container, blob_name=blob_name, destination=dest_path
+        )
     except Exception as e:
         print(f"[⚠️] Error downloading blob: {e}")
 
