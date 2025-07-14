@@ -29,7 +29,7 @@ jobs:
 
       - name: 🔧 Install bloblite as editable package
         run: |
-          . .venv/bin/activate
+          . venv/bin/activate
           pip install -e .
 
       - name: 🧪 Run tests with pytest
