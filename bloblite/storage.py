@@ -14,7 +14,7 @@ class Storage:
             self.base_path.mkdir(parents=True, exist_ok=True)
         except PermissionError:
             print(
-                f"⚠️ Warning: Cannot create or access storage at {self.base_path}. Check your permissions."
+                f"[alert] Warning: Cannot create or access storage at {self.base_path}. Check your permissions."
             )
             self.base_path = None
 
@@ -29,18 +29,18 @@ class Storage:
             ValueError: Si el contenedor ya existe.
         """
         if not self.base_path:
-            print("⚠️ Storage not initialized. Cannot create container.")
+            print("[alert] Storage not initialized. Cannot create container.")
             return
         container_path = self.base_path / name
         if container_path.exists():
-            print(f"ℹ️ Container '{name}' already exists.")
+            print(f"[info] Container '{name}' already exists.")
             return
 
         try:
             container_path.mkdir()
-            print(f"✅ Container '{name}' created.")
+            print(f"[ok] Container '{name}' created.")
         except PermissionError:
-            print(f"⚠️ Cannot create container '{name}'. Check your permissions.")
+            print(f"[alert] Cannot create container '{name}'. Check your permissions.")
 
     def list_containers(self) -> List[str]:
         """
@@ -50,20 +50,20 @@ class Storage:
             Lista de nombres de contenedores.
         """
         if not self.base_path:
-            print("⚠️ Storage not initialized. Cannot list containers.")
+            print("[alert] Storage not initialized. Cannot list containers.")
             return []
         try:
             containers = sorted(
                 [d.name for d in self.base_path.iterdir() if d.is_dir()]
             )
         except (PermissionError, OSError):
-            print("⚠️ Cannot access containers. Permission denied.")
+            print("[alert] Cannot access containers. Permission denied.")
             return []
 
         if not containers:
-            print("⚠️ No exists containers")
+            print("[alert] No exists containers")
         else:
-            print("📦 Available containers:")
+            print("[ok] Available containers:")
             for i, container in enumerate(containers, 1):
                 print(f" {i}. {container}")
             print(f"\nTotal: {len(containers)} container(s)")
@@ -81,7 +81,7 @@ class Storage:
             FileNotFoundError: Si el contenedor o el archivo no existen.
         """
         if not self.base_path:
-            print("⚠️ Storage not initialized. Cannot upload.")
+            print("[alert] Storage not initialized. Cannot upload.")
             return
         container_path = self.base_path / container
         if not container_path.exists():
@@ -90,21 +90,21 @@ class Storage:
 
         source = Path(file_path)
         if not source.exists():
-            print(f"❌ Source file '{file_path}' not found.")
+            print(f"[error] Source file '{file_path}' not found.")
             return
 
         dst = container_path / source.name
 
         if dst.exists():
             print(
-                f"ℹ️ Blob '{source.name}' already exists in container '{container}'. Skipping upload."
+                f"[info] Blob '{source.name}' already exists in container '{container}'. Skipping upload."
             )
             return
 
         try:
             shutil.copy2(source, dst)
         except (PermissionError, IOError):
-            print(f"⚠️ Cannot copy file to '{dst}'. Check permissions.")
+            print(f"[alert] Cannot copy file to '{dst}'. Check permissions.")
             return
 
         metadata: Dict[str, str | int] = {
@@ -119,9 +119,9 @@ class Storage:
             with open(metadata_file, "w", encoding="utf-8") as f:
                 json.dump(metadata, f, indent=2)
         except (PermissionError, IOError):
-            print(f"⚠️ Failed to write metadata for '{source.name}'.")
+            print(f"[alert] Failed to write metadata for '{source.name}'.")
 
-        print(f"⬆️  Uploaded '{source.name}' to container '{container}'.")
+        print(f"[ok]  Uploaded '{source.name}' to container '{container}'.")
 
     def list_blobs(self, container: str, verbose: bool = True) -> List[str]:
         """
@@ -138,12 +138,12 @@ class Storage:
         """
         if not self.base_path:
             if verbose:
-                print("⚠️ Storage not initialized. Cannot list blobs.")
+                print("[alert] Storage not initialized. Cannot list blobs.")
             return []
         container_path = self.base_path / container
         if not container_path.exists():
             if verbose:
-                print(f"❌ Error: Container '{container}' does not exist.")
+                print(f"[error] Error: Container '{container}' does not exist.")
             return []
 
         try:
@@ -156,14 +156,14 @@ class Storage:
             )
         except (PermissionError, OSError):
             if verbose:
-                print(f"⚠️ Cannot access files in container '{container}'.")
+                print(f"[alert] Cannot access files in container '{container}'.")
             return []
 
         if verbose:
             if not blobs:
-                print(f"ℹ️  Container '{container}' is empty.")
+                print(f"[info]  Container '{container}' is empty.")
             else:
-                print(f"📄 Blobs in container '{container}':")
+                print(f"Blobs in container '{container}':")
                 for i, blob in enumerate(blobs, 1):
                     print(f"  {i}. {blob}")
                 print(f"\nTotal: {len(blobs)} blob(s)")
@@ -182,7 +182,7 @@ class Storage:
             FileNotFoundError: Si el blob no existe.
         """
         if not self.base_path:
-            print("⚠️ Storage not initialized. Cannot download.")
+            print("[alert] Storage not initialized. Cannot download.")
             return
         container_path = self.base_path / container
         blob_path = container_path / blob_name
@@ -192,9 +192,9 @@ class Storage:
 
         try:
             shutil.copy2(blob_path, destination)
-            print(f"⬇️  Downloaded '{blob_name}' to '{destination}'.")
+            print(f"[ok]  Downloaded '{blob_name}' to '{destination}'.")
         except (PermissionError, IOError):
-            print(f"⚠️ Cannot write blob to '{destination}'. Check permissions.")
+            print(f"[alert] Cannot write blob to '{destination}'. Check permissions.")
 
     def get_blob_metadata(
         self, container: str, blob_name: str
@@ -210,7 +210,7 @@ class Storage:
             Diccionario con metadata o None si no existe.
         """
         if not self.base_path:
-            print("⚠️ Storage not initialized. Cannot get metadata.")
+            print("[alert] Storage not initialized. Cannot get metadata.")
             return None
         container_path = self.base_path / container
         metadata_path = container_path / f"{Path(blob_name).stem}.metadata.json"
@@ -221,5 +221,5 @@ class Storage:
             with open(metadata_path, encoding="utf-8") as f:
                 return json.load(f)
         except (PermissionError, IOError):
-            print(f"⚠️ Cannot read metadata for blob '{blob_name}'.")
+            print(f"[alert] Cannot read metadata for blob '{blob_name}'.")
             return None

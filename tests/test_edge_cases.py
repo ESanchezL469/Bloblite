@@ -26,7 +26,7 @@ def test_create_container_without_storage(capsys):
         storage = Storage()
         storage.create_container("prueba")
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized." in captured.out
+        assert "Storage not initialized." in captured.out
 
 
 def test_create_container_without_permissions(capsys, storage):
@@ -47,7 +47,7 @@ def test_list_containers_without_storage(capsys):
         storage = Storage()
         result = storage.list_containers()
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized. Cannot list containers." in captured.out
+        assert "Storage not initialized. Cannot list containers." in captured.out
         assert result == []
 
 
@@ -113,7 +113,7 @@ def test_upload_blob_write_metadata_fails(tmp_path, capsys):
         storage.upload_blob("c1", str(source))
         captured = capsys.readouterr()
         print(captured)
-        assert "⚠️ Cannot copy file to" in captured.out
+        assert "Cannot copy file to" in captured.out
 
 
 def test_upload_blob_without_storage(capsys):
@@ -121,7 +121,7 @@ def test_upload_blob_without_storage(capsys):
         storage = Storage()
         storage.upload_blob(container="test", file_path="data.csv")
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized. Cannot upload." in captured.out
+        assert "Storage not initialized. Cannot upload." in captured.out
 
 
 def test_upload_blob_metadata_write_failure(tmp_path, capsys):
@@ -145,7 +145,7 @@ def test_upload_blob_metadata_write_failure(tmp_path, capsys):
         storage.upload_blob("mycontainer", str(test_file))
         captured = capsys.readouterr()
 
-    assert "⚠️ Failed to write metadata for 'file.txt'." in captured.out
+    assert "Failed to write metadata for 'file.txt'." in captured.out
 
 
 def test_list_blobs_empty_container(capsys, storage):
@@ -168,7 +168,7 @@ def test_list_blobs_without_storage(capsys):
         storage = Storage()
         result = storage.list_blobs("prueba")
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized. Cannot list blobs." in captured.out
+        assert "Storage not initialized. Cannot list blobs." in captured.out
         assert result == []
 
 
@@ -194,7 +194,7 @@ def test_download_blobs_without_storage(capsys):
         storage = Storage()
         storage.download_blob("prueba", "data.csv", "ext")
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized. Cannot download." in captured.out
+        assert "Storage not initialized. Cannot download." in captured.out
 
 
 def test_download_blob_no_permission(tmp_path, capsys):
@@ -232,7 +232,7 @@ def test_get_blob_metadata_without_storage(capsys):
         storage = Storage()
         result = storage.get_blob_metadata("prueba", "data.csv")
         captured = capsys.readouterr()
-        assert "⚠️ Storage not initialized. Cannot get metadata." in captured.out
+        assert "Storage not initialized. Cannot get metadata." in captured.out
         assert None == result
 
 

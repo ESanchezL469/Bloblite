@@ -9,7 +9,7 @@ def _setup_arg_parser() -> argparse.ArgumentParser:
     """Configure and return the argument parser for BlobLite CLI."""
     parser = argparse.ArgumentParser(
         prog="bloblite",
-        description="📦 BlobLite - Azure Blob Storage simulator (local)",
+        description="[ok] BlobLite - Azure Blob Storage simulator (local)",
         epilog="Example: 'bloblite container create my-container'",
     )
 
@@ -85,7 +85,7 @@ def _handle_blob_actions(args, storage: Storage) -> None:
         if metadata:
             print(metadata)
         else:
-            print("⚠️ Metadata not found.")
+            print("[info] Metadata not found.")
 
 
 def main() -> None:
