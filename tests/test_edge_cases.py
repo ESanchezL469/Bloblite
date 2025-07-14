@@ -123,6 +123,20 @@ def test_upload_blob_write_metadata_fails(tmp_path, capsys):
 
     assert "[alert] Failed to write metadata for 'test.txt'." in captured.out
 
+def test_upload_blob_copy2_fails(tmp_path, capsys):
+    storage = Storage(base_path=tmp_path)
+    container = tmp_path / "c1"
+    container.mkdir()
+    source = tmp_path / "file.txt"
+    source.write_text("hello")
+
+    with patch("shutil.copy2", side_effect=PermissionError("No write access")):
+        storage.upload_blob("c1", str(source))
+        captured = capsys.readouterr()
+
+    assert "[alert] Cannot copy file to" in captured.out
+    assert "[ok]  Uploaded" not in captured.out
+    assert "Failed to write metadata" not in captured.out  # No llega a esa parte
 
 def test_upload_blob_without_storage(capsys):
     with patch.object(Path, "mkdir", side_effect=PermissionError):
