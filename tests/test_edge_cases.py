@@ -109,11 +109,19 @@ def test_upload_blob_write_metadata_fails(tmp_path, capsys):
     source = tmp_path / "test.txt"
     source.write_text("hello")
 
-    with patch("builtins.open", side_effect=PermissionError):
+    metadata_file = container / "test.metadata.json"
+    real_open = builtins.open  # Guardamos referencia al open original
+
+    def selective_open(path, *args, **kwargs):
+        if str(path) == str(metadata_file):
+            raise PermissionError("Cannot write metadata")
+        return real_open(path, *args, **kwargs)
+
+    with patch("builtins.open", side_effect=selective_open):
         storage.upload_blob("c1", str(source))
         captured = capsys.readouterr()
-        print(captured)
-        assert "Cannot copy file to" in captured.out
+
+    assert "[alert] Failed to write metadata for 'test.txt'." in captured.out
 
 
 def test_upload_blob_without_storage(capsys):
