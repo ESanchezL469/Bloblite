@@ -1,27 +1,27 @@
 # ☁️ BlobLite
 
-**BlobLite** is a local, lightweight simulation of Azure Blob Storage — ideal for developers and data engineers who want to experiment, learn or prototype **without needing an Azure subscription**.
+**BlobLite** is a local, lightweight simulation of Azure Blob Storage — ideal for developers, data engineers, and learners who want to experiment or prototype **without an Azure subscription**.
 
 ---
 
 ## 🚀 Features
 
-- Create and manage containers locally
-- Upload, list, download blobs with realistic metadata
-- Azure-like CLI for seamless migration and learning
-- No dependencies, no external services
-- Built to last, with clean architecture and good practices
+- Create and manage containers locally (mimicking Azure Blob Storage)
+- Upload, list, download blobs with realistic metadata handling
+- Azure-like CLI for seamless learning and migration
+- Clean code, full test coverage, no dependencies
+- Built to last — simple, modular, and transparent
 
 ---
 
 ## ⚙️ Requirements
 
 - Python 3.8+
-- Linux (initial support; Windows/Mac coming soon)
+- Linux (initial support) — *Windows and macOS support coming soon*
 
 ---
 
-## 🛠 Installation (local development)
+## 🛠️ Installation (for development)
 
 ```bash
 git clone https://github.com/youruser/bloblite.git
@@ -55,15 +55,31 @@ python bloblite/cli.py blob show-metadata --container clientes --name data.csv
 
 ---
 
-## 📁 File Storage
+## 📁 Local File Storage Path
 
-All containers and blobs are stored under:
+BlobLite stores all blobs and containers under:
 
 ```
 ~/.bloblite_storage/<container>/<blob>
 ```
 
-> The base path is automatically created per user in their home directory.
+> This path is automatically created in the user's home directory.
+> You can override it using the `BLOBLITE_ROOT` environment variable.
+
+---
+
+## 🧩 Python SDK Usage
+
+```python
+from bloblite.sdk.blob_service_client import BlobServiceClient
+
+client = BlobServiceClient()
+container = client.get_container_client("clientes")
+container.create_container()
+container.upload_blob("archivo.csv")
+blobs = container.list_blobs()
+container.download_blob("archivo.csv", "downloads/")
+```
 
 ---
 
@@ -71,38 +87,51 @@ All containers and blobs are stored under:
 
 ```
 bloblite/
-├── bloblite/              ← Core library (container/blob logic)
-│   ├── cli.py             ← Azure-style CLI
-│   ├── storage.py         ← Storage logic
+├── bloblite/              ← Core library (SDK, CLI, storage)
+│   ├── cli.py             ← CLI entry point
+│   ├── sdk/               ← Azure-like Python SDK
+│   │   ├── blob_service_client.py
+│   │   └── container_client.py
+│   ├── storage.py         ← Local storage engine
 │   └── __init__.py
-├── examples/
-│   └── main.py            ← Programmatic example usage
-├── tests/                 ← (Coming soon)
-├── requirements-dev.txt
-├── pyproject.toml
-├── Makefile
-└── README.md
+├── examples/              ← Usage examples
+│   └── main.py
+├── tests/                 ← Full test suite (100% coverage)
+├── .github/               ← GitHub Actions CI config
+│   └── workflows/
+│       └── test.yml
+├── requirements-dev.txt   ← Dev dependencies only
+├── pyproject.toml         ← Project configuration
+├── Makefile               ← Developer helper commands
+└── README.md              ← This file
 ```
 
 ---
 
-## 🔜 Roadmap
+## ✅ Test Coverage
 
-- [x] CLI with Azure-style subcommands
-- [x] Python SDK (BlobServiceClient, ContainerClient)
-- [x] Linux full support
-- [ ] Windows/Mac compatibility
-- [ ] GitHub Actions tests
-- [ ] Integration with Azure CLI (`az`)
+- 100% test coverage via `pytest` + `coverage`
+- CLI, SDK and storage logic fully tested in isolation and integration
+
+![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
 
 ---
 
+## 🔭 Roadmap
 
-![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
+- [x] Azure-style CLI interface
+- [x] Python SDK (BlobServiceClient, ContainerClient)
+- [x] Linux compatibility and CI
+- [x] Full unit + integration test coverage
+- [ ] Windows/macOS support
+- [ ] Integration with Azure CLI (`az`)
+- [ ] Minimal Web UI for interaction
 
+---
 
 ## 🪪 License
 
-MIT — feel free to fork, extend, or contribute.
+**MIT** — free to use, share and modify.
 
-Made with ❤️ by Santiago Sánchez.
+Crafted with ❤️ by Santiago Sánchez — [@ESanchezL469](https://github.com/ESanchezL469)
