@@ -1,3 +1,19 @@
+[project]
+name = "bloblite"
+version = "0.1.0"
+description = "Local, lightweight simulation of Azure Blob Storage"
+authors = [{ name="Santiago Sanchez", email="santiago.sanchezl123@outlook.com" }]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+dependencies = []
+
 [build-system]
-requires = ["setuptools>=61.0"]
+requires = ["setuptools>=61"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = {"" = "bloblite"}
+
+[tool.setuptools.packages.find]
+where = ["bloblite"]
