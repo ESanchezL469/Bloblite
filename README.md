@@ -89,8 +89,9 @@ bloblite/
 ## 🔜 Roadmap
 
 - [x] CLI with Azure-style subcommands
-- [ ] Python SDK (BlobServiceClient, ContainerClient)
-- [ ] Windows/Mac support
+- [x] Python SDK (BlobServiceClient, ContainerClient)
+- [x] Linux full support
+- [ ] Windows/Mac compatibility
 - [ ] GitHub Actions tests
 - [ ] Integration with Azure CLI (`az`)
 

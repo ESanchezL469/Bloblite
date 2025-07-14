@@ -29,6 +29,7 @@ run:
 	@$(PYTHON) examples/main.py
 
 test:
+	clear
 	@echo "🧪 Running tests..."
 	@$(PYTHON) -m pytest tests
 
@@ -41,6 +42,7 @@ format:
 	@$(VENV_DIR)/bin/black bloblite examples tests
 
 clean:
+	clear
 	@echo "🧹 Cleaning cache..."
 	@find . -type d -name '__pycache__' -exec rm -r {} + 2>/dev/null
 	@find . -type d -name '.pytest_cache' -exec rm -r {} + 2>/dev/null
