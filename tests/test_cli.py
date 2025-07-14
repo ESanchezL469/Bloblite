@@ -3,7 +3,9 @@ import subprocess
 from pathlib import Path
 
 
-def run_cli(args: list[str], env: dict[str, str], cwd: Path) -> subprocess.CompletedProcess:
+def run_cli(
+    args: list[str], env: dict[str, str], cwd: Path
+) -> subprocess.CompletedProcess:
     """
     Ejecuta el CLI con argumentos y entorno personalizados.
     """
@@ -35,7 +37,11 @@ def test_cli_full_workflow(tmp_path: Path):
     test_file.write_text("id,nombre\n1,Ana\n2,Luis\n")
 
     # 3. Subir archivo
-    result = run_cli(["blob", "upload", "--container", "clientes", "--file", str(test_file)], env, project_root)
+    result = run_cli(
+        ["blob", "upload", "--container", "clientes", "--file", str(test_file)],
+        env,
+        project_root,
+    )
     assert "uploaded" in result.stdout.lower(), result.stdout + result.stderr
 
     # 4. Listar blobs
@@ -43,14 +49,27 @@ def test_cli_full_workflow(tmp_path: Path):
     assert "archivo.csv" in result.stdout, result.stdout + result.stderr
 
     # 5. Mostrar metadata
-    result = run_cli(["blob", "show-metadata", "--container", "clientes", "--name", "archivo.csv"], env, project_root)
+    result = run_cli(
+        ["blob", "show-metadata", "--container", "clientes", "--name", "archivo.csv"],
+        env,
+        project_root,
+    )
     assert "archivo.csv" in result.stdout, result.stdout + result.stderr
 
     # 6. Descargar archivo
     out_dir = tmp_path / "descargas"
     out_dir.mkdir()
     result = run_cli(
-        ["blob", "download", "--container", "clientes", "--name", "archivo.csv", "--dest", str(out_dir)],
+        [
+            "blob",
+            "download",
+            "--container",
+            "clientes",
+            "--name",
+            "archivo.csv",
+            "--dest",
+            str(out_dir),
+        ],
         env,
         project_root,
     )

@@ -50,11 +50,13 @@ def _setup_arg_parser() -> argparse.ArgumentParser:
 
     return parser
 
+
 def _get_storage() -> Storage:
     """Crea una instancia de Storage configurable vía BLOBLITE_ROOT."""
     custom_root = os.environ.get("BLOBLITE_ROOT")
     root_path = Path(custom_root) if custom_root else None
     return Storage(base_path=root_path)
+
 
 def _handle_container_actions(args, storage: Storage) -> None:
     """Execute container-related actions based on parsed arguments."""
@@ -77,7 +79,9 @@ def _handle_blob_actions(args, storage: Storage) -> None:
     elif args.action == "list":
         storage.list_blobs(container=args.container)
     elif args.action == "show-metadata":
-        metadata = storage.get_blob_metadata(container=args.container, blob_name=args.name)
+        metadata = storage.get_blob_metadata(
+            container=args.container, blob_name=args.name
+        )
         if metadata:
             print(metadata)
         else:

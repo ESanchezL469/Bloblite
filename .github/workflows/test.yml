@@ -27,6 +27,11 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements-dev.txt
 
+      - name: 🔧 Install bloblite as editable package
+        run: |
+          . .venv/bin/activate
+          pip install -e .
+
       - name: 🧪 Run tests with pytest
         run: |
           . venv/bin/activate
