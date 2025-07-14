@@ -1,6 +1,7 @@
 import os
 import subprocess
 from pathlib import Path
+import sys
 
 
 def run_cli(
@@ -75,3 +76,46 @@ def test_cli_full_workflow(tmp_path: Path):
     )
     assert (out_dir / "archivo.csv").exists(), "Archivo no descargado correctamente"
     assert "downloaded" in result.stdout.lower()
+
+
+def test_cli_blob_show_metadata_missing(monkeypatch, tmp_path):
+    monkeypatch.setenv("BLOBLITE_ROOT", str(tmp_path))
+    subprocess.run(
+        [sys.executable, "bloblite/cli.py", "container", "create", "clientes"],
+        check=True,
+    )
+    result = subprocess.run(
+        [
+            sys.executable,
+            "bloblite/cli.py",
+            "blob",
+            "show-metadata",
+            "--container",
+            "clientes",
+            "--name",
+            "missing.csv",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert "not found" in result.stdout or result.returncode == 0
+
+
+def test_cli_container_list(monkeypatch, tmp_path):
+    monkeypatch.setenv("BLOBLITE_ROOT", str(tmp_path))
+
+    # Primero crea un contenedor para que "list" tenga salida
+    subprocess.run(
+        [sys.executable, "bloblite/cli.py", "container", "create", "clientes"],
+        check=True,
+    )
+
+    # Luego lista los contenedores
+    result = subprocess.run(
+        [sys.executable, "bloblite/cli.py", "container", "list"],
+        capture_output=True,
+        text=True,
+    )
+
+    assert "clientes" in result.stdout
+    assert "container(s)" in result.stdout

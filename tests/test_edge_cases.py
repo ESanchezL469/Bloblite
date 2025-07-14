@@ -1,0 +1,94 @@
+import json
+
+
+def test_upload_blob_twice_skips_duplicate(tmp_path, storage):
+    storage.create_container("clientes")
+    archivo = tmp_path / "archivo.csv"
+    archivo.write_text("id,nombre\n1,Ana")
+    storage.upload_blob("clientes", str(archivo))
+    storage.upload_blob("clientes", str(archivo))  # No debe duplicar
+    blobs = list((storage.base_path / "clientes").glob("archivo.csv"))
+    assert len(blobs) == 1
+
+
+def test_download_blob_not_exist(tmp_path, storage):
+    storage.create_container("clientes")
+    storage.download_blob("clientes", "no_existe.csv", str(tmp_path))
+    assert not (tmp_path / "no_existe.csv").exists()
+
+
+def test_metadata_file_created(tmp_path, storage):
+    storage.create_container("clientes")
+    archivo = tmp_path / "data.csv"
+    archivo.write_text("1,2")
+    storage.upload_blob("clientes", str(archivo))
+    meta = storage.base_path / "clientes" / "data.metadata.json"
+    assert meta.exists()
+    contenido = json.loads(meta.read_text())
+    assert contenido["name"] == "data.csv"
+
+
+def test_list_blobs_empty_container(capsys, storage):
+    storage.create_container("clientes")
+    storage.list_blobs("clientes")
+    captured = capsys.readouterr()
+    assert "is empty" in captured.out
+
+
+def test_get_blob_metadata_not_found(storage):
+    storage.create_container("clientes")
+    result = storage.get_blob_metadata("clientes", "missing.csv")
+    assert result is None
+
+
+def test_list_containers_empty(capsys, storage):
+    storage.list_containers()
+    captured = capsys.readouterr()
+    assert "No exists containers" in captured.out
+
+
+def test_create_container_already_exists(capsys, storage):
+    storage.create_container("clientes")
+    storage.create_container("clientes")
+    output = capsys.readouterr().out
+
+    assert "already exists" in output
+
+
+def test_upload_blob_container_not_found(capsys, tmp_path, storage):
+    dummy_file = tmp_path / "archivo.csv"
+    dummy_file.write_text("id,nombre\n1,Juan")
+
+    storage.upload_blob(container="clientes", file_path=str(dummy_file))
+    output = capsys.readouterr().out
+    assert "does not exist" in output
+
+
+def test_upload_blob_file_not_found(capsys, storage):
+    storage.create_container("clientes")
+
+    storage.upload_blob(container="clientes", file_path="no_existe.csv")
+    output = capsys.readouterr().out
+    assert "not found" in output
+
+
+def test_upload_blob_already_exists(capsys, tmp_path, storage):
+    storage.create_container("clientes")
+
+    # Crear archivo y subirlo una vez
+    archivo = tmp_path / "archivo.csv"
+    archivo.write_text("data")
+    storage.upload_blob(container="clientes", file_path=str(archivo))
+
+    # Segundo intento
+    storage.upload_blob(container="clientes", file_path=str(archivo))
+    output = capsys.readouterr().out
+    assert "already exists" in output
+
+
+def test_list_blobs_container_not_found(capsys, storage):
+    blobs = storage.list_blobs(container="inexistente")
+    output = capsys.readouterr().out
+
+    assert blobs == []
+    assert "does not exist" in output
