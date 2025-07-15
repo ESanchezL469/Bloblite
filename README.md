@@ -16,7 +16,7 @@
 
 ## ⚙️ Requirements
 
-- Python 3.8+
+- Python 3.10+
 - Linux (initial support) — *Windows and macOS support coming soon*
 
 ---
@@ -24,9 +24,11 @@
 ## 🛠️ Installation (for development)
 
 ```bash
-git clone https://github.com/youruser/bloblite.git
+git clone https://github.com/ESanchezL469/bloblite.git
 cd bloblite
 make setup
+source venv/bin/activate  # Linux/macOS
+# .env\Scriptsctivate  # Windows (PowerShell)
 ```
 
 ---
@@ -35,22 +37,22 @@ make setup
 
 ```bash
 # Create a container
-python bloblite/cli.py container create clientes
+python -m bloblite.cli container create clientes
 
 # List containers
-python bloblite/cli.py container list
+python -m bloblite.cli container list
 
 # Upload a file to a container
-python bloblite/cli.py blob upload --container clientes --file ./data.csv
+python -m bloblite.cli blob upload --container clientes --file ./data.csv
 
 # List blobs inside a container
-python bloblite/cli.py blob list --container clientes
+python -m bloblite.cli blob list --container clientes
 
 # Download a blob to a specific location
-python bloblite/cli.py blob download --container clientes --name data.csv --dest ./downloads/
+python -m bloblite.cli blob download --container clientes --name data.csv --dest ./downloads/
 
 # Show blob metadata
-python bloblite/cli.py blob show-metadata --container clientes --name data.csv
+python -m bloblite.cli blob show-metadata --container clientes --name data.csv
 ```
 
 ---
@@ -63,7 +65,7 @@ BlobLite stores all blobs and containers under:
 ~/.bloblite_storage/<container>/<blob>
 ```
 
-> This path is automatically created in the user's home directory.
+> This path is automatically created in the user's home directory.  
 > You can override it using the `BLOBLITE_ROOT` environment variable.
 
 ---
@@ -87,7 +89,7 @@ container.download_blob("archivo.csv", "downloads/")
 
 ```
 bloblite/
-├── bloblite/              ← Core library (SDK, CLI, storage)
+├── src/bloblite/          ← Core library (SDK, CLI, storage)
 │   ├── cli.py             ← CLI entry point
 │   ├── sdk/               ← Azure-like Python SDK
 │   │   ├── blob_service_client.py
@@ -96,12 +98,12 @@ bloblite/
 │   └── __init__.py
 ├── examples/              ← Usage examples
 │   └── main.py
-├── tests/                 ← Full test suite (100% coverage)
+├── tests/                 ← Full test suite (90%+ coverage)
 ├── .github/               ← GitHub Actions CI config
 │   └── workflows/
 │       └── test.yml
 ├── requirements-dev.txt   ← Dev dependencies only
-├── pyproject.toml         ← Project configuration
+├── pyproject.toml         ← Project configuration (PEP 621)
 ├── Makefile               ← Developer helper commands
 └── README.md              ← This file
 ```
@@ -110,11 +112,11 @@ bloblite/
 
 ## ✅ Test Coverage
 
-- 100% test coverage via `pytest` + `coverage`
+- 90%+ test coverage via `pytest` + `coverage`
 - CLI, SDK and storage logic fully tested in isolation and integration
 
 ![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)
+![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
 
 ---
 
