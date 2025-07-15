@@ -1,7 +1,7 @@
 import builtins
 import json
 from pathlib import Path
-from unittest.mock import mock_open, patch
+from unittest.mock import patch
 from bloblite.storage import Storage
 
 
@@ -123,6 +123,7 @@ def test_upload_blob_write_metadata_fails(tmp_path, capsys):
 
     assert "[alert] Failed to write metadata for 'test.txt'." in captured.out
 
+
 def test_upload_blob_copy2_fails(tmp_path, capsys):
     storage = Storage(base_path=tmp_path)
     container = tmp_path / "c1"
@@ -137,6 +138,7 @@ def test_upload_blob_copy2_fails(tmp_path, capsys):
     assert "[alert] Cannot copy file to" in captured.out
     assert "[ok]  Uploaded" not in captured.out
     assert "Failed to write metadata" not in captured.out  # No llega a esa parte
+
 
 def test_upload_blob_without_storage(capsys):
     with patch.object(Path, "mkdir", side_effect=PermissionError):
@@ -255,7 +257,7 @@ def test_get_blob_metadata_without_storage(capsys):
         result = storage.get_blob_metadata("prueba", "data.csv")
         captured = capsys.readouterr()
         assert "Storage not initialized. Cannot get metadata." in captured.out
-        assert None == result
+        assert result is None
 
 
 def test_get_blob_metadata_permission_error(tmp_path, capsys):
