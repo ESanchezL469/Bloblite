@@ -1,5 +1,4 @@
 from pathlib import Path
-from typing import Union
 
 from bloblite.storage import Storage
 
@@ -25,13 +24,13 @@ class ContainerClient:
         """
         self.storage.list_blobs(self.name)
 
-    def upload_blob(self, file_path: Union[str, Path]) -> None:
+    def upload_blob(self, file_path: str | Path) -> None:
         """
         Upload a blob to the container.
         """
         self.storage.upload_blob(self.name, str(file_path))
 
-    def download_blob(self, blob_name: str, dest_path: Union[str, Path]) -> None:
+    def download_blob(self, blob_name: str, dest_path: str | Path) -> None:
         """
         Download a blob to a given destination.
         """

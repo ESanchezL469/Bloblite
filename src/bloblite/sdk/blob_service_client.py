@@ -1,7 +1,7 @@
 from pathlib import Path
-from typing import List, Optional
-from bloblite.storage import Storage
+
 from bloblite.sdk.container_client import ContainerClient
+from bloblite.storage import Storage
 
 
 class BlobServiceClient:
@@ -9,11 +9,11 @@ class BlobServiceClient:
     Simulates Azure BlobServiceClient for local use.
     """
 
-    def __init__(self, storage_root: Optional[Path] = None) -> None:
+    def __init__(self, storage_root: Path | None) -> None:
         self.storage = Storage(storage_root)
         self.storage_root = storage_root
 
-    def list_containers(self) -> List[str]:
+    def list_containers(self) -> list[str]:
         """
         List all available containers (folders).
         """

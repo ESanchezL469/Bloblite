@@ -1,13 +1,12 @@
 import json
 import shutil
-from pathlib import Path
 from datetime import datetime, timezone
-from typing import List, Optional, Dict
+from pathlib import Path
 
 
 class Storage:
 
-    def __init__(self, base_path: Optional[Path] = None):
+    def __init__(self, base_path: Path | None = None):
         self.base_path = base_path or Path.home() / ".bloblite_storage"
         try:
             self.base_path.mkdir(parents=True, exist_ok=True)
@@ -41,7 +40,7 @@ class Storage:
         except PermissionError:
             print(f"[alert] Cannot create container '{name}'. Check your permissions.")
 
-    def list_containers(self) -> List[str]:
+    def list_containers(self) -> list[str]:
         """
         Lista todos los contenedores existentes.
 
@@ -102,11 +101,11 @@ class Storage:
 
         try:
             shutil.copy2(source, dst)
-        except (PermissionError, IOError):
+        except OSError:
             print(f"[alert] Cannot copy file to '{dst}'. Check permissions.")
             return
 
-        metadata: Dict[str, str | int] = {
+        metadata: dict[str, str | int] = {
             "name": source.name,
             "size": source.stat().st_size,
             "uploaded_at": datetime.now(timezone.utc).isoformat(),
@@ -117,12 +116,12 @@ class Storage:
         try:
             with open(metadata_file, "w", encoding="utf-8") as f:
                 json.dump(metadata, f, indent=2)
-        except (PermissionError, IOError):
+        except OSError:
             print(f"[alert] Failed to write metadata for '{source.name}'.")
 
         print(f"[ok]  Uploaded '{source.name}' to container '{container}'.")
 
-    def list_blobs(self, container: str, verbose: bool = True) -> List[str]:
+    def list_blobs(self, container: str, verbose: bool = True) -> list[str]:
         """
         Lista todos los blobs dentro de un contenedor.
 
@@ -192,12 +191,10 @@ class Storage:
         try:
             shutil.copy2(blob_path, destination)
             print(f"[ok]  Downloaded '{blob_name}' to '{destination}'.")
-        except (PermissionError, IOError):
+        except OSError:
             print(f"[alert] Cannot write blob to '{destination}'. Check permissions.")
 
-    def get_blob_metadata(
-        self, container: str, blob_name: str
-    ) -> Optional[Dict[str, str | int]]:
+    def get_blob_metadata(self, container: str, blob_name: str) -> dict[str, str | int]:
         """
         Retorna la metadata asociada a un blob.
 
@@ -219,6 +216,6 @@ class Storage:
         try:
             with open(metadata_path, encoding="utf-8") as f:
                 return json.load(f)
-        except (PermissionError, IOError):
+        except OSError:
             print(f"[alert] Cannot read metadata for blob '{blob_name}'.")
             return None

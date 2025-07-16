@@ -16,3 +16,23 @@ build-backend = "setuptools.build_meta"
 package-dir = {"" = "src"}
 packages = ["bloblite"]  # 🔥 Asegúrate de tener esto
 
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests", "examples"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+# E: pycodestyle (estilo PEP8)
+# F: pyflakes (errores lógicos)
+# I: isort (orden de imports)
+# UP: pyupgrade (uso de features modernos)
+
+ignore = [
+  "E501",  # Ignora long lines > 100 si prefieres (ya lo manejas con line-length)
+]
+
+[tool.ruff.format]
+quote-style = "double"  # "single" también válido
+indent-style = "space"
+line-ending = "auto"

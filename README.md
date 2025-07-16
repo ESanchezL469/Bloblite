@@ -4,6 +4,9 @@
 
 ---
 
+![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
+![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
+
 ## 🚀 Features
 
 - Create and manage containers locally (mimicking Azure Blob Storage)
@@ -14,12 +17,14 @@
 
 ---
 
+
 ## ⚙️ Requirements
 
 - Python 3.10+
 - Linux (initial support) — *Windows and macOS support coming soon*
 
 ---
+
 
 ## 🛠️ Installation (for development)
 
@@ -28,10 +33,11 @@ git clone https://github.com/ESanchezL469/bloblite.git
 cd bloblite
 make setup
 source venv/bin/activate  # Linux/macOS
-# .env\Scriptsctivate  # Windows (PowerShell)
+# .\venv\Scripts\Activate  # Windows (PowerShell)
 ```
 
 ---
+
 
 ## 🧪 CLI Usage
 
@@ -57,18 +63,6 @@ python -m bloblite.cli blob show-metadata --container clientes --name data.csv
 
 ---
 
-## 📁 Local File Storage Path
-
-BlobLite stores all blobs and containers under:
-
-```
-~/.bloblite_storage/<container>/<blob>
-```
-
-> This path is automatically created in the user's home directory.  
-> You can override it using the `BLOBLITE_ROOT` environment variable.
-
----
 
 ## 🧩 Python SDK Usage
 
@@ -84,6 +78,21 @@ container.download_blob("archivo.csv", "downloads/")
 ```
 
 ---
+
+
+## 📁 Local File Storage Path
+
+BlobLite stores all blobs and containers under:
+
+```
+~/.bloblite_storage/<container>/<blob>
+```
+
+> This path is automatically created in the user's home directory.  
+> You can override it using the `BLOBLITE_ROOT` environment variable.
+
+---
+
 
 ## 📂 Project Structure
 
@@ -110,15 +119,15 @@ bloblite/
 
 ---
 
+
 ## ✅ Test Coverage
 
 - 90%+ test coverage via `pytest` + `coverage`
 - CLI, SDK and storage logic fully tested in isolation and integration
 
-![Tests](https://github.com/ESanchezL469/bloblite/actions/workflows/test.yml/badge.svg)
-![Coverage](https://img.shields.io/badge/coverage-90%25-brightgreen)
 
 ---
+
 
 ## 🔭 Roadmap
 
@@ -131,6 +140,7 @@ bloblite/
 - [ ] Minimal Web UI for interaction
 
 ---
+
 
 ## 🪪 License
 

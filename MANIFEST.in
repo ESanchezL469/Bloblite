@@ -1,2 +1,20 @@
+# Incluir archivos esenciales
 include README.md
 include LICENSE
+include pyproject.toml
+include Makefile
+include requirements-dev.txt
+include requirements-lock.txt
+
+# Incluir el código fuente, tests y ejemplos
+recursive-include src *
+recursive-include tests *
+recursive-include examples *
+
+# Incluir archivos markdown si existen
+include ROADMAP.md
+
+# Ignorar archivos que no deben ir al paquete
+exclude .coverage
+exclude coverage.xml
+exclude dist/*

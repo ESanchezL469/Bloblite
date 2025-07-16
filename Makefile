@@ -9,20 +9,25 @@ PIP = $(VENV_DIR)/bin/pip
 .PHONY: help setup run test lint format clean upgrade-deps build publish check freeze test-cli
 
 help:
+	@echo ""
 	@echo "🔧 BlobLite - Dev Commands:"
-	@echo "  setup         → Create venv only"
+	@echo "  setup         → Create virtual environment only"
+	@echo "  activate      → Show how to activate the virtual environment"
 	@echo "  install       → Install all dev dependencies"
-	@echo "  run           → Run example safely"
+	@echo "  run           → Run example (examples/main.py)"
 	@echo "  test          → Run all tests with pytest"
 	@echo "  test-cli      → Run only CLI tests"
+	@echo "  coverage      → Generate test coverage report"
 	@echo "  lint          → Lint code with ruff"
 	@echo "  format        → Format code with black"
 	@echo "  clean         → Remove __pycache__ and .pyc files"
-	@echo "  build         → Build the distribution packages"
-	@echo "  publish       → Upload to PyPI"
 	@echo "  upgrade-deps  → Upgrade pip and dev dependencies"
-	@echo "  check         → Lint, test, and build"
-	@echo "  freeze        → Save exact dependency versions"
+	@echo "  build         → Build the distribution packages"
+	@echo "  publish       → Upload built package to PyPI"
+	@echo "  check         → Run linting, tests, build, coverage, and manifest check"
+	@echo "  freeze        → Save exact dependency versions to requirements-lock.txt"
+	@echo "  version       → Show current BlobLite package version"
+	@echo ""
 
 setup:
 	@echo "📦 Setting up virtual environment..."
@@ -30,11 +35,19 @@ setup:
 	@echo "✅ Virtual environment created."
 	@echo "👉 Run 'source $(VENV_DIR)/bin/activate' to activate it."
 
+activate:
+	@echo "💡 Run this to activate your virtual environment:"
+	@echo "source $(VENV_DIR)/bin/activate"
+
 install:
 	@echo "📥 Installing dev dependencies..."
 	@$(PIP) install --upgrade pip
 	@$(PIP) install -r requirements-dev.txt
 	@echo "✅ Dependencies installed."
+
+coverage:
+	@echo "📊 Generando cobertura..."
+	@$(PYTHON) -m pytest --cov=src --cov-report=xml --cov-report=term
 
 run:
 	@echo "🚀 Running example..."
@@ -93,9 +106,19 @@ check:
 	@$(PYTHON) -m build > /dev/null || (echo '❌ Build failed' && exit 1)
 
 	@echo ""
+	@echo "📊 4. Checking coverage..."
+	@$(MAKE) coverage
+
+	@echo ""
+	@echo "🔎 5. Checking manifest..."
+	@check-manifest || (echo '❌ MANIFEST.in check failed' && exit 1)
+	@echo ""
 	@echo "✅ All checks passed successfully!"
 	@echo "===================================================================="
 
 freeze:
 	@echo "📄 Freezing current environment..."
 	@$(PIP) freeze > requirements-lock.txt
+
+version:
+	@$(PYTHON) -c "import bloblite; print(bloblite.__version__)"

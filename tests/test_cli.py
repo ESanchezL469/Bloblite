@@ -1,7 +1,7 @@
 import os
 import subprocess
-from pathlib import Path
 import sys
+from pathlib import Path
 
 
 def run_cli(
@@ -14,9 +14,9 @@ def run_cli(
         **env,
         "PYTHONPATH": str(cwd / "src"),  # ✅ esta línea es CRUCIAL
     }
-    
+
     return subprocess.run(
-        [sys.executable,"-m","bloblite.cli"] + args,
+        [sys.executable, "-m", "bloblite.cli"] + args,
         env=env,
         cwd=str(cwd),
         capture_output=True,
